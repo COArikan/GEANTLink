@@ -22,19 +22,14 @@
 #include "../../MSCHAPv2/include/Config.h"
 
 ///
-/// MSCHAPv2 credential configuration panel
+/// MSCHAPv2 credential entry panel
 ///
-typedef wxEAPCredentialsConfigPanel<eap::credentials_pass, wxPasswordCredentialsPanel<eap::credentials_pass, wxEAPCredentialsPromptPassPanelBase> > wxMSCHAPv2CredentialsConfigPanel;
+typedef wxPasswordCredentialsPanel<eap::credentials_pass, wxEAPCredentialsPassPanelBase> wxMSCHAPv2CredentialsPanel;
 
 ///
 /// MSCHAPv2 configuration panel
 ///
 class wxMSCHAPv2ConfigPanel;
-
-///
-/// MSCHAPv2 credential entry panel
-///
-typedef wxPasswordCredentialsPanel<eap::credentials_pass, wxEAPCredentialsPromptPassPanelBase> wxMSCHAPv2CredentialsPanel;
 
 #pragma once
 
@@ -63,5 +58,6 @@ protected:
     /// \endcond
 
 protected:
-    wxMSCHAPv2CredentialsConfigPanel *m_credentials; ///< Credentials configuration panel
+    wxMSCHAPv2CredentialsPanel *m_credentials;  ///< Credentials configuration panel
+    eap::credentials_pass m_cred;               ///< Resulting credentials
 };

@@ -58,17 +58,12 @@ class wxFQDNListValidator;
 ///
 /// TLS credential panel
 ///
-class wxEAPCredentialsPromptTLSPanel;
+class wxTLSCredentialsPanel;
 
 ///
 /// TLS server trust configuration panel
 ///
 class wxTLSServerTrustPanel;
-
-///
-/// TLS credentials configuration panel
-///
-typedef wxEAPCredentialsConfigPanel<eap::credentials_tls, wxEAPCredentialsPromptTLSPanel> wxEAPCredentialsPromptTLSConfigPanel;
 
 ///
 /// TLS configuration panel
@@ -248,19 +243,19 @@ protected:
 };
 
 
-class wxEAPCredentialsPromptTLSPanel : public wxEAPCredentialsPromptPanel<eap::credentials_tls, wxEAPCredentialsPromptTLSPanelBase>
+class wxTLSCredentialsPanel : public wxEAPCredentialsPanel<eap::credentials_tls, wxTLSCredentialsPanelBase>
 {
 public:
     ///
     /// Constructs a configuration panel
     ///
-    /// \param[in]    prov       Provider configuration data
-    /// \param[in]    cfg        Configuration data
-    /// \param[inout] cred       Credentials data
-    /// \param[in]    parent     Parent window
-    /// \param[in]    is_config  Is this panel used to pre-enter credentials? When \c true, the "Remember" checkbox is always selected and disabled.
+    /// \param[in]  prov       Provider configuration data
+    /// \param[in]  cfg        Configuration data
+    /// \param[out] cred       Credentials data
+    /// \param[in]  parent     Parent window
+    /// \param[in]  is_config  Is this panel used to config credentials?
     ///
-    wxEAPCredentialsPromptTLSPanel(const eap::config_provider &prov, const eap::config_method_with_cred &cfg, eap::credentials_tls &cred, wxWindow* parent, bool is_config = false);
+    wxTLSCredentialsPanel(const eap::config_provider &prov, const eap::config_method_tls &cfg, eap::credentials_tls &cred, wxWindow* parent, bool is_config = false);
 
 protected:
     /// \cond internal
@@ -330,8 +325,9 @@ protected:
     /// \endcond
 
 protected:
-    const eap::config_provider &m_prov;          ///< EAP provider
-    eap::config_method_tls &m_cfg;               ///< TLS configuration
-    wxTLSServerTrustPanel *m_server_trust;       ///< Server trust configuration panel
-    wxEAPCredentialsPromptTLSConfigPanel *m_credentials;  ///< Credentials configuration panel
+    const eap::config_provider &m_prov;     ///< EAP provider
+    eap::config_method_tls &m_cfg;          ///< TLS configuration
+    wxTLSServerTrustPanel *m_server_trust;  ///< Server trust configuration panel
+    wxTLSCredentialsPanel *m_credentials;   ///< Credentials configuration panel
+    eap::credentials_tls m_cred;            ///< Resulting credentials
 };

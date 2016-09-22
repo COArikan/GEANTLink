@@ -11,9 +11,6 @@
 #include <wx/artprov.h>
 #include <wx/xrc/xmlres.h>
 #include <wx/intl.h>
-class wxEAPCredentialsPanelBase;
-
-#include "../include/wxEAP_UIBase.h"
 class wxEAPBannerPanel;
 #include <wx/gdicmn.h>
 #include <wx/font.h>
@@ -30,10 +27,8 @@ class wxEAPBannerPanel;
 #include <wx/image.h>
 #include <wx/icon.h>
 #include <wx/statbmp.h>
-#include <wx/radiobut.h>
 #include <wx/textctrl.h>
 #include <wx/statbox.h>
-#include <wx/timer.h>
 #include <wx/choice.h>
 #include <wx/checkbox.h>
 
@@ -158,43 +153,9 @@ class wxEAPNotePanelBase : public wxPanel
 };
 
 ///////////////////////////////////////////////////////////////////////////////
-/// Class wxEAPCredentialsConfigPanelBase
+/// Class wxEAPCredentialsPassPanelBase
 ///////////////////////////////////////////////////////////////////////////////
-class wxEAPCredentialsConfigPanelBase : public wxPanel 
-{
-	private:
-	
-	protected:
-		wxStaticBitmap* m_credentials_icon;
-		wxStaticText* m_credentials_label;
-		wxRadioButton* m_storage;
-		wxTextCtrl* m_storage_identity;
-		wxButton* m_storage_clear;
-		wxButton* m_storage_set;
-		wxRadioButton* m_config;
-		wxTextCtrl* m_config_identity;
-		wxButton* m_config_set;
-		wxTimer m_timer_storage;
-		
-		// Virtual event handlers, overide them in your derived class
-		virtual void OnUpdateUI( wxUpdateUIEvent& event ) { event.Skip(); }
-		virtual void OnClearStorage( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnSetStorage( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnSetConfig( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnTimerStorage( wxTimerEvent& event ) { event.Skip(); }
-		
-	
-	public:
-		
-		wxEAPCredentialsConfigPanelBase( wxWindow* parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 500,-1 ), long style = wxTAB_TRAVERSAL ); 
-		~wxEAPCredentialsConfigPanelBase();
-	
-};
-
-///////////////////////////////////////////////////////////////////////////////
-/// Class wxEAPCredentialsPromptPassPanelBase
-///////////////////////////////////////////////////////////////////////////////
-class wxEAPCredentialsPromptPassPanelBase : public wxEAPCredentialsPanelBase
+class wxEAPCredentialsPassPanelBase : public wxPanel 
 {
 	private:
 	
@@ -207,11 +168,15 @@ class wxEAPCredentialsPromptPassPanelBase : public wxEAPCredentialsPanelBase
 		wxTextCtrl* m_identity;
 		wxStaticText* m_password_label;
 		wxTextCtrl* m_password;
+		
+		// Virtual event handlers, overide them in your derived class
+		virtual void OnUpdateUI( wxUpdateUIEvent& event ) { event.Skip(); }
+		
 	
 	public:
 		
-		wxEAPCredentialsPromptPassPanelBase( wxWindow* parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 500,-1 ), long style = wxTAB_TRAVERSAL ); 
-		~wxEAPCredentialsPromptPassPanelBase();
+		wxEAPCredentialsPassPanelBase( wxWindow* parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 500,-1 ), long style = wxTAB_TRAVERSAL ); 
+		~wxEAPCredentialsPassPanelBase();
 	
 };
 

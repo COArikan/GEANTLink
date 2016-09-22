@@ -11,9 +11,6 @@
 #include <wx/artprov.h>
 #include <wx/xrc/xmlres.h>
 #include <wx/intl.h>
-class wxEAPCredentialsPanelBase;
-
-#include "../../EAPBase_UI/include/wxEAP_UIBase.h"
 #include <wx/bitmap.h>
 #include <wx/image.h>
 #include <wx/icon.h>
@@ -69,9 +66,9 @@ class wxEAPTLSServerTrustConfigPanelBase : public wxPanel
 };
 
 ///////////////////////////////////////////////////////////////////////////////
-/// Class wxEAPCredentialsPromptTLSPanelBase
+/// Class wxTLSCredentialsPanelBase
 ///////////////////////////////////////////////////////////////////////////////
-class wxEAPCredentialsPromptTLSPanelBase : public wxEAPCredentialsPanelBase
+class wxTLSCredentialsPanelBase : public wxPanel 
 {
 	private:
 	
@@ -83,7 +80,6 @@ class wxEAPCredentialsPromptTLSPanelBase : public wxEAPCredentialsPanelBase
 		wxChoice* m_certificate;
 		wxStaticText* m_identity_label;
 		wxTextCtrl* m_identity;
-		wxStaticText* m_identity_note;
 		
 		// Virtual event handlers, overide them in your derived class
 		virtual void OnUpdateUI( wxUpdateUIEvent& event ) { event.Skip(); }
@@ -91,8 +87,8 @@ class wxEAPCredentialsPromptTLSPanelBase : public wxEAPCredentialsPanelBase
 	
 	public:
 		
-		wxEAPCredentialsPromptTLSPanelBase( wxWindow* parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 500,-1 ), long style = wxTAB_TRAVERSAL ); 
-		~wxEAPCredentialsPromptTLSPanelBase();
+		wxTLSCredentialsPanelBase( wxWindow* parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 500,-1 ), long style = wxTAB_TRAVERSAL ); 
+		~wxTLSCredentialsPanelBase();
 	
 };
 

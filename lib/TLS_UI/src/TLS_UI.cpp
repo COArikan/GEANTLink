@@ -308,21 +308,25 @@ bool wxFQDNListValidator::Parse(const wxString &val_in, size_t i_start, size_t i
 
 
 //////////////////////////////////////////////////////////////////////
-// wxEAPCredentialsPromptTLSPanel
+// wxTLSCredentialsPanel
 //////////////////////////////////////////////////////////////////////
 
-wxEAPCredentialsPromptTLSPanel::wxEAPCredentialsPromptTLSPanel(const eap::config_provider &prov, const eap::config_method_with_cred &cfg, eap::credentials_tls &cred, wxWindow* parent, bool is_config) :
-    wxEAPCredentialsPromptPanel<eap::credentials_tls, wxEAPCredentialsPromptTLSPanelBase>(prov, cfg, cred, parent, is_config)
+wxTLSCredentialsPanel::wxTLSCredentialsPanel(const eap::config_provider &prov, const eap::config_method_tls &cfg, eap::credentials_tls &cred, wxWindow* parent, bool is_config) :
+    wxEAPCredentialsPanel<eap::credentials_tls, wxTLSCredentialsPanelBase>(prov, cfg, cred, parent, is_config)
 {
     // Load and set icon.
     winstd::library lib_shell32;
-    if (lib_shell32.load(_T("shell32.dll"), NULL, LOAD_LIBRARY_AS_DATAFILE | LOAD_LIBRARY_AS_IMAGE_RESOURCE))
-        m_credentials_icon->SetIcon(wxLoadIconFromResource(lib_shell32, MAKEINTRESOURCE(269)));
+    if (lib_shell32.load(_T("certmgr.dll"), NULL, LOAD_LIBRARY_AS_DATAFILE | LOAD_LIBRARY_AS_IMAGE_RESOURCE))
+        m_credentials_icon->SetIcon(wxLoadIconFromResource(lib_shell32, MAKEINTRESOURCE(6170)));
 }
 
 
-bool wxEAPCredentialsPromptTLSPanel::TransferDataToWindow()
+bool wxTLSCredentialsPanel::TransferDataToWindow()
 {
+    // Call parent TransferDataToWindow() method first to prepare m_cred.
+    if (!wxEAPCredentialsPanel<eap::credentials_tls, wxTLSCredentialsPanelBase>::TransferDataToWindow())
+        return false;
+
     // Populate certificate list.
     m_certificate->Append(_("<empty>"));
     bool is_found = false;
@@ -357,11 +361,11 @@ bool wxEAPCredentialsPromptTLSPanel::TransferDataToWindow()
 
     m_identity->SetValue(m_cred.m_identity);
 
-    return wxEAPCredentialsPromptPanel<eap::credentials_tls, wxEAPCredentialsPromptTLSPanelBase>::TransferDataToWindow();
+    return true;
 }
 
 
-bool wxEAPCredentialsPromptTLSPanel::TransferDataFromWindow()
+bool wxTLSCredentialsPanel::TransferDataFromWindow()
 {
     const wxCertificateClientData *data = dynamic_cast<const wxCertificateClientData*>(m_certificate->GetClientObject(m_certificate->GetSelection()));
     if (data)
@@ -371,20 +375,24 @@ bool wxEAPCredentialsPromptTLSPanel::TransferDataFromWindow()
 
     m_cred.m_identity = m_identity->GetValue();
 
-    // Inherited TransferDataFromWindow() calls m_cred.store().
-    // Therefore, call it only now, that m_cred is set.
-    return wxEAPCredentialsPromptPanel<eap::credentials_tls, wxEAPCredentialsPromptTLSPanelBase>::TransferDataFromWindow();
+    // Call parent TransferDataFromWindow() method last to save m_cred (if required).
+    return wxEAPCredentialsPanel<eap::credentials_tls, wxTLSCredentialsPanelBase>::TransferDataFromWindow();
 }
 
 
-void wxEAPCredentialsPromptTLSPanel::OnUpdateUI(wxUpdateUIEvent& /*event*/)
+void wxTLSCredentialsPanel::OnUpdateUI(wxUpdateUIEvent& /*event*/)
 {
-    if (!m_is_config && m_cfg.m_use_cred) {
-        // Credential prompt mode & Using configured credentials
+    if (m_cfg.m_use_cred) {
+        // Provisioned credentials
         m_certificate->Enable(false);
         m_identity   ->Enable(false);
+    } else if (m_is_config) {
+        // We are configuring stored credentials.
+        bool enable = !m_prompt->GetValue();
+        m_certificate->Enable(enable);
+        m_identity   ->Enable(enable);
     } else {
-        // Configuration mode or using own credentials. Enable controls.
+        // We are prompting for (stored) credentials.
         m_certificate->Enable(true);
         m_identity   ->Enable(true);
     }
@@ -403,7 +411,7 @@ wxTLSServerTrustPanel::wxTLSServerTrustPanel(const eap::config_provider &prov, e
     // Load and set icon.
     winstd::library lib_certmgr;
     if (lib_certmgr.load(_T("certmgr.dll"), NULL, LOAD_LIBRARY_AS_DATAFILE | LOAD_LIBRARY_AS_IMAGE_RESOURCE))
-        m_server_trust_icon->SetIcon(wxLoadIconFromResource(lib_certmgr, MAKEINTRESOURCE(218)));
+        m_server_trust_icon->SetIcon(wxLoadIconFromResource(lib_certmgr, MAKEINTRESOURCE(379)));
 
     // Do not use cfg.m_server_names directly, so we can decide not to store the value in case of provider-locked configuration.
     // Never rely on control disabled state alone, as they can be enabled using external tool like Spy++.
@@ -555,6 +563,7 @@ bool wxTLSServerTrustPanel::AddRootCA(PCCERT_CONTEXT cert)
 wxTLSConfigPanel::wxTLSConfigPanel(const eap::config_provider &prov, eap::config_method_tls &cfg, wxWindow* parent) :
     m_prov(prov),
     m_cfg(cfg),
+    m_cred(cfg.m_module),
     wxPanel(parent)
 {
     wxBoxSizer* sb_content;
@@ -563,7 +572,7 @@ wxTLSConfigPanel::wxTLSConfigPanel(const eap::config_provider &prov, eap::config
     m_server_trust = new wxTLSServerTrustPanel(prov, cfg, this);
     sb_content->Add(m_server_trust, 0, wxDOWN|wxEXPAND, 5);
 
-    m_credentials = new wxEAPCredentialsPromptTLSConfigPanel(prov, cfg, this);
+    m_credentials = new wxTLSCredentialsPanel(prov, cfg, m_cred, this, true);
     sb_content->Add(m_credentials, 0, wxUP|wxEXPAND, 5);
 
     this->SetSizer(sb_content);

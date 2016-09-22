@@ -114,9 +114,9 @@ wxEAPTLSServerTrustConfigPanelBase::~wxEAPTLSServerTrustConfigPanelBase()
 	
 }
 
-wxEAPCredentialsPromptTLSPanelBase::wxEAPCredentialsPromptTLSPanelBase( wxWindow* parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style ) : wxEAPCredentialsPanelBase( parent, id, pos, size, style )
+wxTLSCredentialsPanelBase::wxTLSCredentialsPanelBase( wxWindow* parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style ) : wxPanel( parent, id, pos, size, style )
 {
-	m_sb_credentials = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, _("TLS Client Certificate") ), wxVERTICAL );
+	m_sb_credentials = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, _("Client Certificate") ), wxVERTICAL );
 	
 	wxBoxSizer* sb_credentials_horiz;
 	sb_credentials_horiz = new wxBoxSizer( wxHORIZONTAL );
@@ -147,11 +147,7 @@ wxEAPCredentialsPromptTLSPanelBase::wxEAPCredentialsPromptTLSPanelBase( wxWindow
 	m_identity = new wxTextCtrl( m_sb_credentials->GetStaticBox(), wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	m_identity->SetToolTip( _("Your identity (username@domain) to override one from certificate; or blank to use one provided in certificate") );
 	
-	sb_identity->Add( m_identity, 0, wxEXPAND|wxBOTTOM, 5 );
-	
-	m_identity_note = new wxStaticText( m_sb_credentials->GetStaticBox(), wxID_ANY, _("(Example: user@contoso.com)"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_identity_note->Wrap( -1 );
-	sb_identity->Add( m_identity_note, 0, wxALIGN_RIGHT, 5 );
+	sb_identity->Add( m_identity, 0, wxEXPAND, 5 );
 	
 	
 	m_sb_credentials_vert->Add( sb_identity, 0, wxEXPAND|wxALL, 5 );
@@ -167,12 +163,12 @@ wxEAPCredentialsPromptTLSPanelBase::wxEAPCredentialsPromptTLSPanelBase( wxWindow
 	this->Layout();
 	
 	// Connect Events
-	this->Connect( wxEVT_UPDATE_UI, wxUpdateUIEventHandler( wxEAPCredentialsPromptTLSPanelBase::OnUpdateUI ) );
+	this->Connect( wxEVT_UPDATE_UI, wxUpdateUIEventHandler( wxTLSCredentialsPanelBase::OnUpdateUI ) );
 }
 
-wxEAPCredentialsPromptTLSPanelBase::~wxEAPCredentialsPromptTLSPanelBase()
+wxTLSCredentialsPanelBase::~wxTLSCredentialsPanelBase()
 {
 	// Disconnect Events
-	this->Disconnect( wxEVT_UPDATE_UI, wxUpdateUIEventHandler( wxEAPCredentialsPromptTLSPanelBase::OnUpdateUI ) );
+	this->Disconnect( wxEVT_UPDATE_UI, wxUpdateUIEventHandler( wxTLSCredentialsPanelBase::OnUpdateUI ) );
 	
 }

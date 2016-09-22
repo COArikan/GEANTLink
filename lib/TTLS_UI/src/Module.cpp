@@ -235,10 +235,6 @@ void eap::peer_ttls_ui::invoke_identity_ui(
                 // Create method credentials panel.
                 wxTTLSCredentialsPanel *panel = new wxTTLSCredentialsPanel(*cfg_prov, *cfg_method, *_cred_method, dlg.m_providers);
 
-                // Set "Remember" checkboxes according to credential source,
-                panel->m_outer_cred->SetRemember(src_outer == eap::credentials::source_storage);
-                panel->m_inner_cred->SetRemember(src_inner == eap::credentials::source_storage);
-
                 // Add panel to choice-book. Select the first one to have known sources.
                 if (!combined && src_outer != eap::credentials::source_unknown && src_inner != eap::credentials::source_unknown) {
                     if (dlg.m_providers->AddPage(panel, wxEAPGetProviderName(cfg_prov->m_name), true)) {
@@ -260,33 +256,9 @@ void eap::peer_ttls_ui::invoke_identity_ui(
             if (result == wxID_OK) {
                 int idx_prov = dlg.m_providers->GetSelection();
                 if (idx_prov != wxNOT_FOUND) {
-                    wxTTLSCredentialsPanel *panel = dynamic_cast<wxTTLSCredentialsPanel*>(dlg.m_providers->GetPage(idx_prov));
                     pair<config_method_ttls*, credentials_connection> &res = cred_method_store[idx_prov];
                     cfg_method = res.first;
                     cred_out = res.second;
-                    credentials_ttls *_cred_out = dynamic_cast<credentials_ttls*>(cred_out.m_cred.get());
-                    wstring target_name(std::move(cred_out.get_id()));
-
-                    // Write credentials to credential manager.
-                    if (panel->m_outer_cred->GetRemember()) {
-                        try {
-                            _cred_out->credentials_tls::store(target_name.c_str(), 0);
-                        } catch (winstd::win_runtime_error &err) {
-                            wxLogError(winstd::tstring_printf(_("Error writing credentials to Credential Manager: %hs (error %u)"), err.what(), err.number()).c_str());
-                        } catch (...) {
-                            wxLogError(_("Writing credentials failed."));
-                        }
-                    }
-
-                    if (panel->m_inner_cred->GetRemember()) {
-                        try {
-                            _cred_out->m_inner->store(target_name.c_str(), 1);
-                        } catch (winstd::win_runtime_error &err) {
-                            wxLogError(winstd::tstring_printf(_("Error writing credentials to Credential Manager: %hs (error %u)"), err.what(), err.number()).c_str());
-                        } catch (...) {
-                            wxLogError(_("Writing credentials failed."));
-                        }
-                    }
                 } else
                     result = wxID_CANCEL;
             }

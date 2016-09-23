@@ -224,9 +224,9 @@ wxEAPNotePanelBase::~wxEAPNotePanelBase()
 {
 }
 
-wxEAPCredentialsPassPanelBase::wxEAPCredentialsPassPanelBase( wxWindow* parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style ) : wxPanel( parent, id, pos, size, style )
+wxPasswordCredentialsPanelBase::wxPasswordCredentialsPanelBase( wxWindow* parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style ) : wxPanel( parent, id, pos, size, style )
 {
-	m_sb_credentials = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, _("User ID and Password") ), wxVERTICAL );
+	m_sb_credentials = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, _("User Password") ), wxVERTICAL );
 	
 	wxBoxSizer* sb_credentials_horiz;
 	sb_credentials_horiz = new wxBoxSizer( wxHORIZONTAL );
@@ -278,13 +278,13 @@ wxEAPCredentialsPassPanelBase::wxEAPCredentialsPassPanelBase( wxWindow* parent, 
 	this->Layout();
 	
 	// Connect Events
-	this->Connect( wxEVT_UPDATE_UI, wxUpdateUIEventHandler( wxEAPCredentialsPassPanelBase::OnUpdateUI ) );
+	this->Connect( wxEVT_UPDATE_UI, wxUpdateUIEventHandler( wxPasswordCredentialsPanelBase::OnUpdateUI ) );
 }
 
-wxEAPCredentialsPassPanelBase::~wxEAPCredentialsPassPanelBase()
+wxPasswordCredentialsPanelBase::~wxPasswordCredentialsPanelBase()
 {
 	// Disconnect Events
-	this->Disconnect( wxEVT_UPDATE_UI, wxUpdateUIEventHandler( wxEAPCredentialsPassPanelBase::OnUpdateUI ) );
+	this->Disconnect( wxEVT_UPDATE_UI, wxUpdateUIEventHandler( wxPasswordCredentialsPanelBase::OnUpdateUI ) );
 	
 }
 

@@ -32,9 +32,9 @@
 ///////////////////////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////////////////////////
-/// Class wxEAPTLSServerTrustConfigPanelBase
+/// Class wxTLSServerTrustPanelBase
 ///////////////////////////////////////////////////////////////////////////////
-class wxEAPTLSServerTrustConfigPanelBase : public wxPanel 
+class wxTLSServerTrustPanelBase : public wxPanel 
 {
 	private:
 	
@@ -60,8 +60,8 @@ class wxEAPTLSServerTrustConfigPanelBase : public wxPanel
 	
 	public:
 		
-		wxEAPTLSServerTrustConfigPanelBase( wxWindow* parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 500,-1 ), long style = wxTAB_TRAVERSAL ); 
-		~wxEAPTLSServerTrustConfigPanelBase();
+		wxTLSServerTrustPanelBase( wxWindow* parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 500,-1 ), long style = wxTAB_TRAVERSAL ); 
+		~wxTLSServerTrustPanelBase();
 	
 };
 

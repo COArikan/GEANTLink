@@ -24,7 +24,7 @@
 ///
 /// MSCHAPv2 credential entry panel
 ///
-typedef wxPasswordCredentialsPanel<eap::credentials_pass, wxEAPCredentialsPassPanelBase> wxMSCHAPv2CredentialsPanel;
+typedef wxPasswordCredentialsPanel<eap::credentials_pass, wxPasswordCredentialsPanelBase> wxMSCHAPv2CredentialsPanel;
 
 ///
 /// MSCHAPv2 configuration panel

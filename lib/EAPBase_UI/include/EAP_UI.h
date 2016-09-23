@@ -737,7 +737,7 @@ protected:
     virtual bool TransferDataToWindow()
     {
         // Call parent TransferDataToWindow() method first to prepare m_cred.
-        if (!wxEAPCredentialsPanel<_Tcred, wxEAPCredentialsPassPanelBase>::TransferDataToWindow())
+        if (!wxEAPCredentialsPanel<_Tcred, wxPasswordCredentialsPanelBase>::TransferDataToWindow())
             return false;
 
         m_identity->SetValue(m_cred.m_identity);
@@ -765,7 +765,7 @@ protected:
         }
 
         // Call parent TransferDataFromWindow() method last to save m_cred (if required).
-        return wxEAPCredentialsPanel<_Tcred, wxEAPCredentialsPassPanelBase>::TransferDataFromWindow();
+        return wxEAPCredentialsPanel<_Tcred, wxPasswordCredentialsPanelBase>::TransferDataFromWindow();
     }
 
     virtual void OnUpdateUI(wxUpdateUIEvent& /*event*/)

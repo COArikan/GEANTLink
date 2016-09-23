@@ -406,7 +406,7 @@ void wxTLSCredentialsPanel::OnUpdateUI(wxUpdateUIEvent& /*event*/)
 wxTLSServerTrustPanel::wxTLSServerTrustPanel(const eap::config_provider &prov, eap::config_method_tls &cfg, wxWindow* parent) :
     m_prov(prov),
     m_cfg(cfg),
-    wxEAPTLSServerTrustConfigPanelBase(parent)
+    wxTLSServerTrustPanelBase(parent)
 {
     // Load and set icon.
     winstd::library lib_certmgr;
@@ -428,13 +428,13 @@ bool wxTLSServerTrustPanel::TransferDataToWindow()
     // Set server acceptable names. The edit control will get populated by validator.
     m_server_names_val = m_cfg.m_server_names;
 
-    return wxEAPTLSServerTrustConfigPanelBase::TransferDataToWindow();
+    return wxTLSServerTrustPanelBase::TransferDataToWindow();
 }
 
 
 bool wxTLSServerTrustPanel::TransferDataFromWindow()
 {
-    wxCHECK(wxEAPTLSServerTrustConfigPanelBase::TransferDataFromWindow(), false);
+    wxCHECK(wxTLSServerTrustPanelBase::TransferDataFromWindow(), false);
 
     if (!m_prov.m_read_only) {
         // This is not a provider-locked configuration. Save the data.

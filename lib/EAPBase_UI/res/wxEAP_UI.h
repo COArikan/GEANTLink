@@ -153,9 +153,9 @@ class wxEAPNotePanelBase : public wxPanel
 };
 
 ///////////////////////////////////////////////////////////////////////////////
-/// Class wxEAPCredentialsPassPanelBase
+/// Class wxPasswordCredentialsPanelBase
 ///////////////////////////////////////////////////////////////////////////////
-class wxEAPCredentialsPassPanelBase : public wxPanel 
+class wxPasswordCredentialsPanelBase : public wxPanel 
 {
 	private:
 	
@@ -175,8 +175,8 @@ class wxEAPCredentialsPassPanelBase : public wxPanel
 	
 	public:
 		
-		wxEAPCredentialsPassPanelBase( wxWindow* parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 500,-1 ), long style = wxTAB_TRAVERSAL ); 
-		~wxEAPCredentialsPassPanelBase();
+		wxPasswordCredentialsPanelBase( wxWindow* parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 500,-1 ), long style = wxTAB_TRAVERSAL ); 
+		~wxPasswordCredentialsPanelBase();
 	
 };
 

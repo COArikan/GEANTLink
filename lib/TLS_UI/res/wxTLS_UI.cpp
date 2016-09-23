@@ -11,7 +11,7 @@
 
 ///////////////////////////////////////////////////////////////////////////
 
-wxEAPTLSServerTrustConfigPanelBase::wxEAPTLSServerTrustConfigPanelBase( wxWindow* parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style ) : wxPanel( parent, id, pos, size, style )
+wxTLSServerTrustPanelBase::wxTLSServerTrustPanelBase( wxWindow* parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style ) : wxPanel( parent, id, pos, size, style )
 {
 	wxStaticBoxSizer* sb_server_trust;
 	sb_server_trust = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, _("Server Trust") ), wxVERTICAL );
@@ -96,27 +96,27 @@ wxEAPTLSServerTrustConfigPanelBase::wxEAPTLSServerTrustConfigPanelBase( wxWindow
 	this->Layout();
 	
 	// Connect Events
-	this->Connect( wxEVT_UPDATE_UI, wxUpdateUIEventHandler( wxEAPTLSServerTrustConfigPanelBase::OnUpdateUI ) );
-	m_root_ca->Connect( wxEVT_COMMAND_LISTBOX_DOUBLECLICKED, wxCommandEventHandler( wxEAPTLSServerTrustConfigPanelBase::OnRootCADClick ), NULL, this );
-	m_root_ca_add_store->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( wxEAPTLSServerTrustConfigPanelBase::OnRootCAAddStore ), NULL, this );
-	m_root_ca_add_file->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( wxEAPTLSServerTrustConfigPanelBase::OnRootCAAddFile ), NULL, this );
-	m_root_ca_remove->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( wxEAPTLSServerTrustConfigPanelBase::OnRootCARemove ), NULL, this );
+	this->Connect( wxEVT_UPDATE_UI, wxUpdateUIEventHandler( wxTLSServerTrustPanelBase::OnUpdateUI ) );
+	m_root_ca->Connect( wxEVT_COMMAND_LISTBOX_DOUBLECLICKED, wxCommandEventHandler( wxTLSServerTrustPanelBase::OnRootCADClick ), NULL, this );
+	m_root_ca_add_store->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( wxTLSServerTrustPanelBase::OnRootCAAddStore ), NULL, this );
+	m_root_ca_add_file->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( wxTLSServerTrustPanelBase::OnRootCAAddFile ), NULL, this );
+	m_root_ca_remove->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( wxTLSServerTrustPanelBase::OnRootCARemove ), NULL, this );
 }
 
-wxEAPTLSServerTrustConfigPanelBase::~wxEAPTLSServerTrustConfigPanelBase()
+wxTLSServerTrustPanelBase::~wxTLSServerTrustPanelBase()
 {
 	// Disconnect Events
-	this->Disconnect( wxEVT_UPDATE_UI, wxUpdateUIEventHandler( wxEAPTLSServerTrustConfigPanelBase::OnUpdateUI ) );
-	m_root_ca->Disconnect( wxEVT_COMMAND_LISTBOX_DOUBLECLICKED, wxCommandEventHandler( wxEAPTLSServerTrustConfigPanelBase::OnRootCADClick ), NULL, this );
-	m_root_ca_add_store->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( wxEAPTLSServerTrustConfigPanelBase::OnRootCAAddStore ), NULL, this );
-	m_root_ca_add_file->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( wxEAPTLSServerTrustConfigPanelBase::OnRootCAAddFile ), NULL, this );
-	m_root_ca_remove->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( wxEAPTLSServerTrustConfigPanelBase::OnRootCARemove ), NULL, this );
+	this->Disconnect( wxEVT_UPDATE_UI, wxUpdateUIEventHandler( wxTLSServerTrustPanelBase::OnUpdateUI ) );
+	m_root_ca->Disconnect( wxEVT_COMMAND_LISTBOX_DOUBLECLICKED, wxCommandEventHandler( wxTLSServerTrustPanelBase::OnRootCADClick ), NULL, this );
+	m_root_ca_add_store->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( wxTLSServerTrustPanelBase::OnRootCAAddStore ), NULL, this );
+	m_root_ca_add_file->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( wxTLSServerTrustPanelBase::OnRootCAAddFile ), NULL, this );
+	m_root_ca_remove->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( wxTLSServerTrustPanelBase::OnRootCARemove ), NULL, this );
 	
 }
 
 wxTLSCredentialsPanelBase::wxTLSCredentialsPanelBase( wxWindow* parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style ) : wxPanel( parent, id, pos, size, style )
 {
-	m_sb_credentials = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, _("Client Certificate") ), wxVERTICAL );
+	m_sb_credentials = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, _("User Certificate") ), wxVERTICAL );
 	
 	wxBoxSizer* sb_credentials_horiz;
 	sb_credentials_horiz = new wxBoxSizer( wxHORIZONTAL );
@@ -126,7 +126,7 @@ wxTLSCredentialsPanelBase::wxTLSCredentialsPanelBase( wxWindow* parent, wxWindow
 	
 	m_sb_credentials_vert = new wxBoxSizer( wxVERTICAL );
 	
-	m_certificate_label = new wxStaticText( m_sb_credentials->GetStaticBox(), wxID_ANY, _("Please select your client &certificate to use for authentication."), wxDefaultPosition, wxDefaultSize, 0 );
+	m_certificate_label = new wxStaticText( m_sb_credentials->GetStaticBox(), wxID_ANY, _("Please select your &certificate to use for authentication."), wxDefaultPosition, wxDefaultSize, 0 );
 	m_certificate_label->Wrap( 440 );
 	m_sb_credentials_vert->Add( m_certificate_label, 0, wxEXPAND|wxTOP|wxRIGHT|wxLEFT, 5 );
 	

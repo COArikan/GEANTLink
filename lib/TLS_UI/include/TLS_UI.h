@@ -266,7 +266,7 @@ protected:
 };
 
 
-class wxTLSServerTrustPanel : public wxEAPTLSServerTrustConfigPanelBase
+class wxTLSServerTrustPanel : public wxTLSServerTrustPanelBase
 {
 public:
     ///

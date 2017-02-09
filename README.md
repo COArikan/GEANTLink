@@ -9,7 +9,9 @@ Suite of EAP supplicants for Microsoft Windows - IEEE 802.1X plug-ins for enterp
     - PAP
     - MSCHAPv2
     - EAP-MSCHAPv2
-    - EAP-GTC
+    - EAP-GTC:
+       - Token generator mode: [RFC 2284](https://tools.ietf.org/html/rfc2284#section-3.6) and [RFC 3748](https://tools.ietf.org/html/rfc3748#section-5.6)
+       - Password mode: user password as GTC response
     - System-installed EAP method chaining (experimental)
 
 ### Security

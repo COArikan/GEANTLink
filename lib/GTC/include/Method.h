@@ -21,6 +21,7 @@
 namespace eap
 {
     class method_gtc;
+    class method_gtcp;
 }
 
 #pragma once
@@ -112,6 +113,73 @@ namespace eap
         credentials_identity &m_cred;           ///< Method user credentials
         winstd::sanitizing_wstring m_challenge; ///< GTC challenge
         winstd::sanitizing_wstring m_response;  ///< GTC response
+    };
+
+
+    ///
+    /// GTC(P) method
+    ///
+    class method_gtcp : public method
+    {
+        WINSTD_NONCOPYABLE(method_gtcp)
+
+    public:
+        ///
+        /// Constructs a GTC(P) method
+        ///
+        /// \param[in] mod   GTC(P) module to use for global services
+        /// \param[in] cfg   Method configuration
+        /// \param[in] cred  User credentials
+        ///
+        method_gtcp(_In_ module &mod, _In_ config_method_eapgtcp &cfg, _In_ credentials_pass &cred);
+
+        ///
+        /// Moves a GTC(P) method
+        ///
+        /// \param[in] other  GTC(P) method to move from
+        ///
+        method_gtcp(_Inout_ method_gtcp &&other);
+
+        ///
+        /// Moves a GTC(P) method
+        ///
+        /// \param[in] other  GTC(P) method to move from
+        ///
+        /// \returns Reference to this object
+        ///
+        method_gtcp& operator=(_Inout_ method_gtcp &&other);
+
+        /// \name Session management
+        /// @{
+
+        virtual void begin_session(
+            _In_        DWORD         dwFlags,
+            _In_  const EapAttributes *pAttributeArray,
+            _In_        HANDLE        hTokenImpersonateUser,
+            _In_opt_    DWORD         dwMaxSendPacketSize = MAXDWORD);
+
+        /// @}
+
+        /// \name Packet processing
+        /// @{
+
+        virtual EapPeerMethodResponseAction process_request_packet(
+            _In_bytecount_(dwReceivedPacketSize) const void  *pReceivedPacket,
+            _In_                                       DWORD dwReceivedPacketSize);
+
+        virtual void get_response_packet(
+            _Out_    sanitizing_blob &packet,
+            _In_opt_ DWORD           size_max = MAXDWORD);
+
+        /// @}
+
+        virtual void get_result(
+            _In_  EapPeerMethodResultReason reason,
+            _Out_ EapPeerMethodResult       *pResult);
+
+    protected:
+        config_method_eapgtcp &m_cfg;   ///< Method configuration
+        credentials_pass &m_cred;       ///< Method user credentials
     };
 
     /// @}

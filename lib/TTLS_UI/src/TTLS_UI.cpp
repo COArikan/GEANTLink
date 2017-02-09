@@ -104,6 +104,7 @@ wxTTLSConfigWindow::wxTTLSConfigWindow(eap::config_provider &prov, eap::config_m
     m_cfg_mschapv2   (cfg.m_module, cfg.m_level + 1),
     m_cfg_eapmschapv2(cfg.m_module, cfg.m_level + 1),
     m_cfg_eapgtc     (cfg.m_module, cfg.m_level + 1),
+    m_cfg_eapgtcp    (cfg.m_module, cfg.m_level + 1),
 #if EAP_INNER_EAPHOST
     m_cfg_eaphost    (cfg.m_module, cfg.m_level + 1),
 #endif
@@ -130,6 +131,8 @@ wxTTLSConfigWindow::wxTTLSConfigWindow(eap::config_provider &prov, eap::config_m
     m_inner_type->AddPage(panel_eapmschapv2, _("EAP-MSCHAPv2"));
     wxGTCConfigPanel *panel_eapgtc = new wxGTCConfigPanel(m_prov, m_cfg_eapgtc, m_inner_type);
     m_inner_type->AddPage(panel_eapgtc, _("EAP-GTC (Token Generator)"));
+    wxGTCPConfigPanel *panel_eapgtcp = new wxGTCPConfigPanel(m_prov, m_cfg_eapgtcp, m_inner_type);
+    m_inner_type->AddPage(panel_eapgtcp, _("EAP-GTC (Password)"));
 #if EAP_INNER_EAPHOST
     wxEapHostConfigPanel *panel_eaphost = new wxEapHostConfigPanel(m_prov, m_cfg_eaphost, m_inner_type);
     m_inner_type->AddPage(panel_eaphost, _("Other EAP methods..."));
@@ -203,7 +206,12 @@ bool wxTTLSConfigWindow::TransferDataToWindow()
 
         case winstd::eap_type_gtc:
             m_cfg_eapgtc = dynamic_cast<eap::config_method_eapgtc&>(*cfg_ttls.m_inner);
-            m_inner_type->SetSelection(3); // 3=EAP-GTC (Token Generator)
+            m_inner_type->SetSelection(3); // 3=EAP-GTC
+            break;
+
+        case winstd::eap_type_gtcp:
+            m_cfg_eapgtcp = dynamic_cast<eap::config_method_eapgtcp&>(*cfg_ttls.m_inner);
+            m_inner_type->SetSelection(4); // 4=EAP-GTC(P)
             break;
 
         default:
@@ -214,7 +222,7 @@ bool wxTTLSConfigWindow::TransferDataToWindow()
     else {
         // EapHost inner method
         m_cfg_eaphost = *cfg_inner_eaphost;
-        m_inner_type->SetSelection(4); // 4=EapHost
+        m_inner_type->SetSelection(5); // 5=EapHost
     }
 #endif
 
@@ -245,12 +253,16 @@ bool wxTTLSConfigWindow::TransferDataFromWindow()
             cfg_ttls.m_inner.reset(new eap::config_method_eapmschapv2(m_cfg_eapmschapv2));
             break;
 
-        case 3: // 3=EAP-GTC (Token Generator)
+        case 3: // 3=EAP-GTC
             cfg_ttls.m_inner.reset(new eap::config_method_eapgtc(m_cfg_eapgtc));
             break;
 
+        case 4: // 4=EAP-GTC(P)
+            cfg_ttls.m_inner.reset(new eap::config_method_eapgtcp(m_cfg_eapgtcp));
+            break;
+
 #if EAP_INNER_EAPHOST
-        case 4: // 4=EapHost
+        case 5: // 5=EapHost
             cfg_ttls.m_inner.reset(new eap::config_method_eaphost(m_cfg_eaphost));
             break;
 #endif

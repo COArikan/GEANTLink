@@ -23,6 +23,7 @@
 namespace eap
 {
     class config_method_eapgtc;
+    class config_method_eapgtcp;
 }
 
 #pragma once
@@ -96,6 +97,74 @@ namespace eap
         ///
         /// @copydoc eap::config_method::get_method_str()
         /// \returns This implementation always returns `L"EAP-GTC"`
+        ///
+        virtual const wchar_t* get_method_str() const;
+
+        ///
+        /// @copydoc eap::config_method::make_credentials()
+        /// \returns This implementation always returns `eap::credentials_identity` type of credentials
+        ///
+        virtual credentials* make_credentials() const;
+    };
+
+
+    ///
+    /// EAP-GTC(P) configuration
+    ///
+    class config_method_eapgtcp : public config_method_with_cred
+    {
+    public:
+        ///
+        /// Constructs configuration
+        ///
+        /// \param[in] mod    EAP module to use for global services
+        /// \param[in] level  Config level (0=outer, 1=inner, 2=inner-inner...)
+        ///
+        config_method_eapgtcp(_In_ module &mod, _In_ unsigned int level);
+
+        ///
+        /// Copies configuration
+        ///
+        /// \param[in] other  Configuration to copy from
+        ///
+        config_method_eapgtcp(_In_ const config_method_eapgtcp &other);
+
+        ///
+        /// Moves configuration
+        ///
+        /// \param[in] other  Configuration to move from
+        ///
+        config_method_eapgtcp(_Inout_ config_method_eapgtcp &&other);
+
+        ///
+        /// Copies configuration
+        ///
+        /// \param[in] other  Configuration to copy from
+        ///
+        /// \returns Reference to this object
+        ///
+        config_method_eapgtcp& operator=(_In_ const config_method_eapgtcp &other);
+
+        ///
+        /// Moves configuration
+        ///
+        /// \param[in] other  Configuration to move from
+        ///
+        /// \returns Reference to this object
+        ///
+        config_method_eapgtcp& operator=(_Inout_ config_method_eapgtcp &&other);
+
+        virtual config* clone() const;
+
+        ///
+        /// @copydoc eap::config_method::get_method_id()
+        /// \returns This implementation always returns `winstd::eap_type_gtcp`
+        ///
+        virtual winstd::eap_type_t get_method_id() const;
+
+        ///
+        /// @copydoc eap::config_method::get_method_str()
+        /// \returns This implementation always returns `L"EAP-GTC(P)"`
         ///
         virtual const wchar_t* get_method_str() const;
 

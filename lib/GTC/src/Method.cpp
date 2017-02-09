@@ -98,13 +98,13 @@ void eap::method_gtc::get_response_packet(
     _In_opt_ DWORD           size_max)
 {
     // Encode GTC response as UTF-8.
-    sanitizing_string reply_utf8;
-    WideCharToMultiByte(CP_UTF8, 0, m_response, reply_utf8, NULL, NULL);
+    sanitizing_string response_utf8;
+    WideCharToMultiByte(CP_UTF8, 0, m_response, response_utf8, NULL, NULL);
 
-    if (sizeof(sanitizing_string::value_type)*reply_utf8.length() > size_max)
-        throw invalid_argument(string_printf(__FUNCTION__ " This method does not support packet fragmentation, but the data size is too big to fit in one packet (packet: %u, maximum: %u).", sizeof(sanitizing_string::value_type)*reply_utf8.length(), size_max));
+    if (sizeof(sanitizing_string::value_type)*response_utf8.length() > size_max)
+        throw invalid_argument(string_printf(__FUNCTION__ " This method does not support packet fragmentation, but the data size is too big to fit in one packet (packet: %u, maximum: %u).", sizeof(sanitizing_string::value_type)*response_utf8.length(), size_max));
 
-    packet.assign(reply_utf8.begin(), reply_utf8.end());
+    packet.assign(response_utf8.begin(), response_utf8.end());
 }
 
 
@@ -149,4 +149,102 @@ EapPeerMethodResponseAction eap::method_gtc::set_ui_context(
     // Send the response.
     m_cfg.m_last_status = config_method::status_cred_invalid; // Blame "credentials" if we fail beyond this point.
     return EapPeerMethodResponseActionSend;
+}
+
+
+//////////////////////////////////////////////////////////////////////
+// eap::method_gtcp
+//////////////////////////////////////////////////////////////////////
+
+eap::method_gtcp::method_gtcp(_In_ module &mod, _In_ config_method_eapgtcp &cfg, _In_ credentials_pass &cred) :
+    m_cfg(cfg),
+    m_cred(cred),
+    method(mod)
+{
+}
+
+
+eap::method_gtcp::method_gtcp(_Inout_ method_gtcp &&other) :
+    m_cfg (          other.m_cfg  ),
+    m_cred(          other.m_cred ),
+    method(std::move(other       ))
+{
+}
+
+
+eap::method_gtcp& eap::method_gtcp::operator=(_Inout_ method_gtcp &&other)
+{
+    if (this != std::addressof(other)) {
+        assert(std::addressof(m_cfg ) == std::addressof(other.m_cfg )); // Move method within same configuration only!
+        assert(std::addressof(m_cred) == std::addressof(other.m_cred)); // Move method within same credentials only!
+        (method&)*this = std::move(other);
+    }
+
+    return *this;
+}
+
+
+void eap::method_gtcp::begin_session(
+    _In_        DWORD         dwFlags,
+    _In_  const EapAttributes *pAttributeArray,
+    _In_        HANDLE        hTokenImpersonateUser,
+    _In_opt_    DWORD         dwMaxSendPacketSize)
+{
+    method::begin_session(dwFlags, pAttributeArray, hTokenImpersonateUser, dwMaxSendPacketSize);
+
+    // Presume authentication will fail with generic protocol failure. (Pesimist!!!)
+    // We will reset once we get get_result(Success) call.
+    m_cfg.m_last_status = config_method::status_auth_failed;
+    m_cfg.m_last_msg.clear();
+}
+
+
+EapPeerMethodResponseAction eap::method_gtcp::process_request_packet(
+    _In_bytecount_(dwReceivedPacketSize) const void  *pReceivedPacket,
+    _In_                                       DWORD dwReceivedPacketSize)
+{
+    assert(pReceivedPacket || dwReceivedPacketSize == 0);
+
+    m_module.log_event(&EAPMETHOD_METHOD_HANDSHAKE_START2, event_data((unsigned int)eap_type_gtcp), event_data::blank);
+
+    // Ignore authenticator challenge.
+    UNREFERENCED_PARAMETER(pReceivedPacket);
+    UNREFERENCED_PARAMETER(dwReceivedPacketSize);
+
+    // Send the response.
+    m_cfg.m_last_status = config_method::status_cred_invalid; // Blame "credentials" if we fail beyond this point.
+    return EapPeerMethodResponseActionSend;
+}
+
+
+void eap::method_gtcp::get_response_packet(
+    _Out_    sanitizing_blob &packet,
+    _In_opt_ DWORD           size_max)
+{
+    // Encode password (GTC response) as UTF-8.
+    sanitizing_string response_utf8;
+    WideCharToMultiByte(CP_UTF8, 0, m_cred.m_password, response_utf8, NULL, NULL);
+
+    if (sizeof(sanitizing_string::value_type)*response_utf8.length() > size_max)
+        throw invalid_argument(string_printf(__FUNCTION__ " This method does not support packet fragmentation, but the data size is too big to fit in one packet (packet: %u, maximum: %u).", sizeof(sanitizing_string::value_type)*response_utf8.length(), size_max));
+
+    packet.assign(response_utf8.begin(), response_utf8.end());
+}
+
+
+void eap::method_gtcp::get_result(
+    _In_    EapPeerMethodResultReason reason,
+    _Inout_ EapPeerMethodResult       *pResult)
+{
+    assert(pResult);
+
+    method::get_result(reason, pResult);
+
+    if (reason == EapPeerMethodResultSuccess)
+        m_cfg.m_last_status = config_method::status_success;
+
+    // Always ask EAP host to save the connection data. And it will save it *only* when we report "success".
+    // Don't worry. EapHost is well aware of failed authentication condition.
+    pResult->fSaveConnectionData = TRUE;
+    pResult->fIsSuccess          = TRUE;
 }

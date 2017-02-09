@@ -86,3 +86,67 @@ eap::credentials* eap::config_method_eapgtc::make_credentials() const
 {
     return new eap::credentials_identity(m_module);
 }
+
+
+//////////////////////////////////////////////////////////////////////
+// eap::config_method_eapgtcp
+//////////////////////////////////////////////////////////////////////
+
+eap::config_method_eapgtcp::config_method_eapgtcp(_In_ module &mod, _In_ unsigned int level) : config_method_with_cred(mod, level)
+{
+    m_cred.reset(new credentials_pass(mod));
+}
+
+
+eap::config_method_eapgtcp::config_method_eapgtcp(_In_ const config_method_eapgtcp &other) :
+    config_method_with_cred(other)
+{
+}
+
+
+eap::config_method_eapgtcp::config_method_eapgtcp(_Inout_ config_method_eapgtcp &&other) :
+    config_method_with_cred(std::move(other))
+{
+}
+
+
+eap::config_method_eapgtcp& eap::config_method_eapgtcp::operator=(_In_ const config_method_eapgtcp &other)
+{
+    if (this != &other)
+        (config_method_with_cred&)*this = other;
+
+    return *this;
+}
+
+
+eap::config_method_eapgtcp& eap::config_method_eapgtcp::operator=(_Inout_ config_method_eapgtcp &&other)
+{
+    if (this != &other)
+        (config_method_with_cred&&)*this = std::move(other);
+
+    return *this;
+}
+
+
+eap::config* eap::config_method_eapgtcp::clone() const
+{
+    return new config_method_eapgtcp(*this);
+}
+
+
+eap_type_t eap::config_method_eapgtcp::get_method_id() const
+{
+    return eap_type_gtcp;
+}
+
+
+const wchar_t* eap::config_method_eapgtcp::get_method_str() const
+{
+    return L"EAP-GTC(P)";
+}
+
+
+eap::credentials* eap::config_method_eapgtcp::make_credentials() const
+{
+    return new eap::credentials_pass(m_module);
+}

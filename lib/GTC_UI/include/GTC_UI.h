@@ -24,6 +24,7 @@
 class wxGTCConfigPanel;
 class wxGTCResponseDialog;
 class wxGTCResponsePanel;
+class wxGTCPConfigPanel;
 
 /// \addtogroup EAPBaseGUI
 /// @{
@@ -37,6 +38,16 @@ typedef wxIdentityCredentialsPanel<eap::credentials_identity, wxIdentityCredenti
 /// GTC credential configuration panel
 ///
 typedef wxEAPCredentialsConfigPanel<eap::credentials_identity, wxGTCCredentialsPanel> wxGTCCredentialsConfigPanel;
+
+///
+/// GTC(P) credential entry panel
+///
+typedef wxPasswordCredentialsPanel<eap::credentials_pass, wxPasswordCredentialsPanelBase> wxGTCPCredentialsPanel;
+
+///
+/// GTC(P) credential configuration panel
+///
+typedef wxEAPCredentialsConfigPanel<eap::credentials_pass, wxGTCPCredentialsPanel> wxGTCPCredentialsConfigPanel;
 
 /// @}
 
@@ -117,6 +128,32 @@ protected:
 
 protected:
     winstd::sanitizing_wstring &m_response_value;   ///< GTC response
+};
+
+
+///
+/// GTC(P) configuration panel
+///
+class wxGTCPConfigPanel : public wxPanel
+{
+public:
+    ///
+    /// Constructs a configuration panel
+    ///
+    wxGTCPConfigPanel(const eap::config_provider &prov, eap::config_method_eapgtcp &cfg, wxWindow* parent);
+
+    ///
+    /// Destructs the configuration panel
+    ///
+    virtual ~wxGTCPConfigPanel();
+
+protected:
+    /// \cond internal
+    virtual void OnInitDialog(wxInitDialogEvent& event);
+    /// \endcond
+
+protected:
+    wxGTCPCredentialsConfigPanel *m_credentials; ///< Credentials configuration panel
 };
 
 /// @}
